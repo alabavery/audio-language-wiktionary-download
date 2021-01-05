@@ -1,5 +1,4 @@
 FROM python:3.8.7-slim-buster
-RUN pip install --upgrade requests time
 RUN mkdir target_directory_mount && mkdir word_list_directory_mount && mkdir code
 COPY ./code /code
 WORKDIR /code
