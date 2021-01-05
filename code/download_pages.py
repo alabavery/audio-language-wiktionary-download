@@ -33,17 +33,23 @@ def download_pages(language, word_list_directory_path, target_directory_path):
         is_success, content = _get_page(base_language_url, word)
         if not is_success:
             errors[word] = content
+            # write errors to disk each time in case the process is interrupted and main memory is lost
+            with open(errors_path, 'w+') as f:
+                f.write(json.dumps(errors))
         else:
             with open(os.path.join(downloads_path, "{word}.txt".format(word=word)), 'w+') as f:
                 f.write(content)
 
         if i % 50 == 0:
-            print("Completed {i} words. Last completed word: {word}".format(i=i, word=word), flush=True)
+            print("----------------------------------------------------")
+            print("Completed {count} words. Last completed word: {word}".format(count=i+1, word=word), flush=True)
+            print("{num} errors so far".format(num=len(errors.keys()), flush=True))
+            print("----------------------------------------------------")
+
+
         time.sleep(0.33)
 
-    print("{num} errors".format(num=len(errors.keys())))
-    with open(errors_path, 'w+') as f:
-        f.write(json.dumps(errors))
+    print("Done! {num} errors total".format(num=len(errors.keys())))
 
 
 def _get_page(language_base_url, word):
