@@ -4,21 +4,13 @@ import os
 import time
 import json
 
-_BASE_WIKTIONARY = "https://{language_abbrev}.wiktionary.org/wiki"
-_LANGUAGE_ABBREVS = { "spanish": "en" }
+_BASE_WIKTIONARY = "https://en.wiktionary.org/wiki"
 _WORD_LIST_FILE_NAME = 'words.json'
 _DOWNLOADS_DIRECTORY_NAME = 'downloads'
 _ERROR_FILE = 'errors.json'
 
 
-def download_pages(language, word_list_directory_path, target_directory_path):
-    language_abbrev = _LANGUAGE_ABBREVS.get(language)
-    if not language_abbrev:
-        print("invalid langage", language)
-        sys.exit()
-    base_language_url = _BASE_WIKTIONARY.format(language_abbrev=language_abbrev)
-    print("base_language_url: {base_language_url}".format(base_language_url=base_language_url), flush=True)
-    
+def download_pages(word_list_directory_path, target_directory_path):    
     word_list = _get_word_list(word_list_directory_path)
     print("Found {num} words to download, beginning with '{first}' and ending in '{last}'".format(num=len(word_list), first=word_list[0], last=word_list[-1]))
 
@@ -30,7 +22,7 @@ def download_pages(language, word_list_directory_path, target_directory_path):
     print("saving words to:", downloads_path, flush=True)
     print("saving errors to:", errors_path, flush=True)
     for i, word in enumerate(word_list):
-        is_success, content = _get_page(base_language_url, word)
+        is_success, content = _get_page(_BASE_WIKTIONARY, word)
         if not is_success:
             errors[word] = content
             # write errors to disk each time in case the process is interrupted and main memory is lost
