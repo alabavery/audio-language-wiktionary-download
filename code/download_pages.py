@@ -4,29 +4,28 @@ import os
 import time
 import json
 
-import get_words_to_skip
+import cached
 import paths
 
 _BASE_WIKTIONARY = "https://en.wiktionary.org/wiki"
 
 
-def download_pages(word_list, target_directory_path):
+def download_pages(word_list, target_directory_path, cached_dir_path):
     errors = {}
     downloads_path = paths.downloads_path(target_directory_path)
     if not os.path.exists(downloads_path):
         os.makedirs(downloads_path)
 
-    words_to_skip = get_words_to_skip.get_words_to_skip(target_directory_path)
-    print(words_to_skip)
+    words_to_copy = cached.get_words_to_copy(cached_dir_path)
+    print(words_to_copy)
 
     errors_path = paths.errors_path(target_directory_path)
     print("saving words to:", downloads_path, flush=True)
     print("saving errors to:", errors_path, flush=True)
 
     for i, word in enumerate(word_list):
-        if word in words_to_skip:
-            print(
-                "Skipping {}, since a download was already performed (or attempted) for it".format(word))
+        if word in words_to_copy:
+            cached.copy_word(word, cached_dir_path, target_directory_path)
             continue
 
         is_success, content = _get_page(_BASE_WIKTIONARY, word)

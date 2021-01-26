@@ -19,16 +19,16 @@ def _get_word_list(word_list_directory_path):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 3:
-        print("Must pass word list path and target path arguments.  Passed arguments:", str(
+    if len(sys.argv) < 4:
+        print("Must pass word list path, target path, and cached path arguments.  Passed arguments:", str(
             sys.argv[1:]))
         sys.exit()
 
-    word_list_dir, target_dir = sys.argv[1:3]
+    word_list_dir, target_dir, cached_dir = sys.argv[1:4]
 
     word_list = _get_word_list(word_list_dir)
     print("Found {num} words to download, beginning with '{first}' and ending in '{last}'".format(
         num=len(word_list), first=word_list[0], last=word_list[-1]))
     print("Beginning work", flush=True)
-    download_pages(word_list, target_dir)
+    download_pages(word_list, target_dir, cached_dir)
     print("Work done")
